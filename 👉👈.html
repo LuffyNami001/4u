@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cuteness Journey</title>
+
+<!-- Google Fonts -->
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+}
+
+body{
+
+    height:100vh;
+
+    background:radial-gradient(circle at bottom,#2b002b,#000);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    overflow:hidden;
+
+    font-family:'Dancing Script', cursive;
+
+}
+
+/* SCREEN SYSTEM */
+
+.screen{
+
+    position:absolute;
+
+    width:100%;
+
+    max-width:420px;
+
+    padding:15px 15px 50px; /* bottom space reserved for watermark */
+
+    text-align:center;
+
+    opacity:0;
+
+    transform:scale(0.95);
+
+    transition:0.8s;
+
+    pointer-events:none;
+
+}
+
+.screen.active{
+
+    opacity:1;
+
+    transform:scale(1);
+
+    pointer-events:auto;
+
+}
+
+/* WATERMARK (SAFE) */
+
+.watermark{
+
+    position:absolute;
+
+    bottom:8px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:11px;
+
+    opacity:0.35;
+
+    font-family:'Poppins',sans-serif;
+
+    pointer-events:none;
+
+    white-space:nowrap;
+
+    z-index:2;
+
+}
+
+/* BOX */
+
+.box{
+
+    width:100%;
+
+    padding:26px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,0.07);
+
+    box-shadow:0 0 25px #ff4d88;
+
+    margin:auto;
+
+}
+
+/* BUTTON */
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    font-size:18px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:linear-gradient(45deg,#ff4d88,#ff85a2);
+
+    color:white;
+
+    cursor:pointer;
+
+    box-shadow:0 0 16px #ff4d88;
+
+    margin:8px 0;
+
+    font-family:'Poppins',sans-serif;
+
+}
+
+button:active{transform:scale(0.96);}
+
+/* METER */
+
+.meter{
+
+    width:100%;
+
+    height:20px;
+
+    background:#333;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin-top:15px;
+
+}
+
+.fill{
+
+    height:100%;
+
+    width:0%;
+
+    background:linear-gradient(90deg,#ff4d88,#ff85a2);
+
+}
+
+.percent{
+
+    font-size:28px;
+
+    margin-top:12px;
+
+    color:#ff85a2;
+
+    font-family:'Poppins',sans-serif;
+
+}
+
+.warning{
+
+    display:none;
+
+    margin-top:12px;
+
+    color:#ffcc00;
+
+    font-family:'Poppins',sans-serif;
+
+    animation:shake 0.4s infinite;
+
+}
+
+@keyframes shake{
+
+    0%{transform:translateX(0)}
+
+    25%{transform:translateX(-3px)}
+
+    50%{transform:translateX(3px)}
+
+    75%{transform:translateX(-3px)}
+
+}
+
+.pop{animation:pop 0.5s}
+
+@keyframes pop{50%{transform:scale(1.12)}}
+
+/* MESSAGES */
+
+.msg-box{
+
+    min-height:48px;
+
+    margin:12px 0;
+
+    color:#ffb6c9;
+
+    font-size:22px;
+
+}
+
+/* HEART & NOTE */
+
+.heart{
+
+    font-size:46px;
+
+    cursor:pointer;
+
+    margin-top:10px;
+
+    animation:pulse 1.5s infinite;
+
+}
+
+@keyframes pulse{50%{transform:scale(1.2)}}
+
+.note{
+
+    display:none;
+
+    font-size:20px;
+
+    line-height:1.7;
+
+    margin-top:15px;
+
+    opacity:0.95;
+
+}
+
+/* FINAL TEXT */
+
+.final-text{
+
+    font-size:32px;
+
+    line-height:1.8;
+
+    color:#ff85a2;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- SCREEN 1 -->
+
+<div class="screen active" id="home">
+
+    <h1>Hey Anshu 💖</h1>
+
+    <button onclick="goMeter()">Open My Heart ❤️</button>
+
+    <div class="watermark">made by priyanshu 🤗</div>
+
+</div>
+
+<!-- SCREEN 2 -->
+
+<div class="screen" id="meterScreen">
+
+    <div class="box" id="box">
+
+        <h2>Measuring Your Cuteness 💕</h2>
+
+        <div class="meter"><div class="fill" id="fill"></div></div>
+
+        <div class="percent" id="percent">0%</div>
+
+        <div class="warning" id="warning">⚠️ TOO CUTE TO HANDLE ⚠️</div>
+
+    </div>
+
+    <div class="watermark">made by priyanshu 🤗</div>
+
+</div>
+
+<!-- SCREEN 3 -->
+
+<div class="screen" id="messages">
+
+    <div class="box">
+
+        <h2>Hidden Compliments 💗</h2>
+
+        <div class="msg-box" id="msg">Tap a button ✨</div>
+
+        <button onclick="reveal(0)">Message 1</button>
+
+        <button onclick="reveal(1)">Message 2</button>
+
+        <button onclick="reveal(2)">Message 3</button>
+
+        <button onclick="reveal(3)">Message 4</button>
+
+        <button onclick="reveal(4)">Message 5</button>
+
+    </div>
+
+    <button onclick="goLetter()">See more 👉</button>
+
+    <div class="watermark">made by priyanshu 🤗</div>
+
+</div>
+
+<!-- SCREEN 4 -->
+
+<div class="screen" id="letter">
+
+    <div class="box">
+
+        <h2>A little note for you 💌</h2>
+
+        <div class="heart" onclick="showNote()">❤️</div>
+
+        <div class="note" id="note">
+
+            just wanted to tell you something... you really are special in a way that's hard to explain.<br><br>
+
+            There's a softness in the way you talk, a sweetness in the way you smile, and something genuine about you that just feels good to be around.<br><br>
+
+            You don't try to be anything extra, you're just you, and that's what makes you so lovely.
+
+        </div>
+
+    </div>
+
+    <button onclick="goFinal()">One last thing 👉</button>
+
+    <div class="watermark">made by priyanshu 🤗</div>
+
+</div>
+
+<!-- SCREEN 5 -->
+
+<div class="screen" id="final">
+
+    <div class="box">
+
+        <div class="final-text">
+
+            You'll always be special to me<br>
+
+            Love you ❤️
+
+        </div>
+
+    </div>
+
+    <div class="watermark">made by priyanshu 🤗</div>
+
+</div>
+
+<script>
+
+const screens=document.querySelectorAll(".screen");
+
+function show(id){
+
+    screens.forEach(s=>s.classList.remove("active"));
+
+    document.getElementById(id).classList.add("active");
+
+}
+
+function goMeter(){
+
+    show("meterScreen");
+
+    startMeter();
+
+}
+
+function startMeter(){
+
+    let fill=document.getElementById("fill");
+
+    let percent=document.getElementById("percent");
+
+    let warning=document.getElementById("warning");
+
+    let box=document.getElementById("box");
+
+    let count=0;
+
+    let interval=setInterval(()=>{
+
+        if(count<=100){
+
+            fill.style.width=count+"%";
+
+            percent.innerText=count+"%";
+
+            count++;
+
+        }else{
+
+            clearInterval(interval);
+
+            box.classList.add("pop");
+
+            warning.style.display="block";
+
+            setTimeout(()=>show("messages"),5000);
+
+        }
+
+    },40);
+
+}
+
+const hiddenMessages=[
+
+    "You look adorable",
+
+    "You have the sweetest vibe",
+
+    "You make things feel lighter",
+
+    "You are naturally charming",
+
+    "You make everything feel more special"
+
+];
+
+function reveal(i){
+
+    document.getElementById("msg").innerText=hiddenMessages[i];
+
+}
+
+function goLetter(){ show("letter"); }
+
+function showNote(){ document.getElementById("note").style.display="block"; }
+
+function goFinal(){ show("final"); }
+
+</script>
+
+</body>
+
+</html>
